@@ -4,14 +4,14 @@ import { throttledGetDataFromApi } from './index';
 
 type Name = {
   name: string;
-}
+};
 
 describe('throttledGetDataFromApi', () => {
   let spyAxiosCreate: jest.SpyInstance;
   let spyAxiosGet: jest.SpyInstance;
-  let baseURL = 'https://jsonplaceholder.typicode.com';
-  let mockEndpoint = '/names';
-  let names: Name[] = [{name: 'Oleg'}, {name: 'Kate'}]
+  const baseURL = 'https://jsonplaceholder.typicode.com';
+  const mockEndpoint = '/names';
+  const names: Name[] = [{ name: 'Oleg' }, { name: 'Kate' }];
 
   beforeAll(() => {
     jest.useFakeTimers();
@@ -24,35 +24,35 @@ describe('throttledGetDataFromApi', () => {
       ...jest.requireActual('lodash'),
       throttle: jest.fn(),
     }));
-  })
+  });
 
   beforeEach(() => {
-    jest.runOnlyPendingTimers()
-    spyAxiosCreate = jest.spyOn(axios, 'create')
-    spyAxiosGet = jest.spyOn(axios.Axios.prototype, 'get')
-    spyAxiosGet.mockResolvedValue({data: names}); 
-  })
+    jest.runOnlyPendingTimers();
+    spyAxiosCreate = jest.spyOn(axios, 'create');
+    spyAxiosGet = jest.spyOn(axios.Axios.prototype, 'get');
+    spyAxiosGet.mockResolvedValue({ data: names });
+  });
 
   afterEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   afterAll(() => {
     jest.useRealTimers();
-  })
+  });
 
   test('should create instance with provided base url', async () => {
     await throttledGetDataFromApi(mockEndpoint);
-    expect(spyAxiosCreate).toBeCalledWith({baseURL})
+    expect(spyAxiosCreate).toBeCalledWith({ baseURL });
   });
 
   test('should perform request to correct provided url', async () => {
     await throttledGetDataFromApi(mockEndpoint);
-    expect(spyAxiosGet).toBeCalledWith(mockEndpoint)
+    expect(spyAxiosGet).toBeCalledWith(mockEndpoint);
   });
 
   test('should return response data', async () => {
     const data = await throttledGetDataFromApi(mockEndpoint);
-    expect(data).toEqual(names)
+    expect(data).toEqual(names);
   });
 });

@@ -2,7 +2,6 @@
 import { generateLinkedList } from './index';
 
 describe('generateLinkedList', () => {
-
   // Check match by expect(...).toStrictEqual(...)
   test('should generate linked list from values 1', () => {
     const values1 = [1, 2, 3];
@@ -26,6 +25,6 @@ describe('generateLinkedList', () => {
   test('should generate linked list from values 2', () => {
     const values2 = [2, 5, 8];
     const list = generateLinkedList(values2);
-    expect(list).toMatchSnapshot()
+    expect(list).toMatchSnapshot();
   });
 });

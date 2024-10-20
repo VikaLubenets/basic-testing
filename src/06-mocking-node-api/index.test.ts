@@ -11,12 +11,12 @@ describe('doStuffByTimeout', () => {
   });
 
   beforeEach(() => {
-    spySetTimeout = jest.spyOn(global, 'setTimeout')
+    spySetTimeout = jest.spyOn(global, 'setTimeout');
   });
 
   afterEach(() => {
-    jest.clearAllMocks()
-});
+    jest.clearAllMocks();
+  });
 
   afterAll(() => {
     jest.useRealTimers();
@@ -50,12 +50,12 @@ describe('doStuffByInterval', () => {
   });
 
   beforeEach(() => {
-    spySetInterval = jest.spyOn(global, 'setInterval')
+    spySetInterval = jest.spyOn(global, 'setInterval');
   });
 
   afterEach(() => {
-    jest.clearAllMocks()
-});
+    jest.clearAllMocks();
+  });
 
   afterAll(() => {
     jest.useRealTimers();
@@ -75,12 +75,11 @@ describe('doStuffByInterval', () => {
     jest.advanceTimersByTime(3000);
     expect(cb).toHaveBeenCalledTimes(3);
   });
-
 });
 
 describe('readFileAsynchronously', () => {
-  let mockPathFile = 'text.txt';
-  let mockContent = 'This is content';
+  const mockPathFile = 'text.txt';
+  const mockContent = 'This is content';
 
   let spyJoin: jest.SpyInstance;
   let spyExistsSync: jest.SpyInstance;
