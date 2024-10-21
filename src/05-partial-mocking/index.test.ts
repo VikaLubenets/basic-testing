@@ -23,7 +23,7 @@ describe('partial mocking', () => {
   });
 
   afterAll(() => {
-    jest.unmock('./index');
+    jest.clearAllMocks();
   });
 
   test('mockOne, mockTwo, mockThree should not log into console', () => {

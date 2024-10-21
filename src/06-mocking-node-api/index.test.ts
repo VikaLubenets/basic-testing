@@ -1,7 +1,18 @@
 // Uncomment the code below and write your tests
-import path from 'node:path';
-import fs from 'node:fs';
+import { existsSync } from 'fs';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import { readFileAsynchronously, doStuffByTimeout, doStuffByInterval } from '.';
+
+jest.mock('path', () => ({
+  join: jest.fn(),
+}));
+jest.mock('fs', () => ({
+  existsSync: jest.fn(),
+}));
+jest.mock('fs/promises', () => ({
+  readFile: jest.fn(),
+}));
 
 describe('doStuffByTimeout', () => {
   let spySetTimeout: jest.SpyInstance;
@@ -81,36 +92,25 @@ describe('readFileAsynchronously', () => {
   const mockPathFile = 'text.txt';
   const mockContent = 'This is content';
 
-  let spyJoin: jest.SpyInstance;
-  let spyExistsSync: jest.SpyInstance;
-  let spyReadFile: jest.SpyInstance;
-
-  beforeEach((): void => {
-    spyJoin = jest.spyOn(path, 'join');
-    spyExistsSync = jest.spyOn(fs, 'existsSync');
-    spyReadFile = jest.spyOn(fs.promises, 'readFile');
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   test('should call join with pathToFile', async () => {
     await readFileAsynchronously(mockPathFile);
-    expect(spyJoin).toBeCalled();
+    expect(join as jest.Mock).toBeCalledWith(__dirname, mockPathFile);
   });
 
   test('should return null if file does not exist', async () => {
-    spyExistsSync.mockReturnValue(false);
+    (existsSync as jest.Mock).mockReturnValue(false);
     const result = await readFileAsynchronously(mockPathFile);
     expect(result).toBeNull();
-    expect(spyExistsSync).toHaveBeenCalledTimes(1);
+    expect(existsSync as jest.Mock).toHaveBeenCalledTimes(1);
   });
 
   test('should return file content if file exists', async () => {
-    spyExistsSync.mockReturnValue(true);
-    spyReadFile.mockResolvedValue(mockContent);
-
+    (existsSync as jest.Mock).mockReturnValue(true);
+    (readFile as jest.Mock).mockResolvedValue(mockContent);
     const result = await readFileAsynchronously(mockPathFile);
     expect(result).toBe(mockContent);
   });

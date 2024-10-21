@@ -1,10 +1,13 @@
 // Uncomment the code below and write your tests
+import { random } from 'lodash';
 import {
   getBankAccount,
   InsufficientFundsError,
   SynchronizationFailedError,
   TransferFailedError,
 } from '.';
+
+jest.mock('lodash');
 
 describe('BankAccount', () => {
   let account: ReturnType<typeof getBankAccount>;
@@ -21,16 +24,23 @@ describe('BankAccount', () => {
 
   test('should throw InsufficientFundsError error when withdrawing more than balance', () => {
     expect(() => account.withdraw(2000)).toThrow(InsufficientFundsError);
+    expect(() => account.withdraw(2000)).toThrow(
+      'Insufficient funds: cannot withdraw more than 1000',
+    );
   });
 
   test('should throw error when transferring more than balance', () => {
     expect(() => account.transfer(2000, otherAccount)).toThrow(
       InsufficientFundsError,
     );
+    expect(() => account.transfer(2000, otherAccount)).toThrow(
+      'Insufficient funds: cannot withdraw more than 1000',
+    );
   });
 
   test('should throw error when transferring to the same account', () => {
     expect(() => account.transfer(500, account)).toThrow(TransferFailedError);
+    expect(() => account.transfer(500, account)).toThrow('Transfer failed');
   });
 
   test('should deposit money', () => {
@@ -50,10 +60,10 @@ describe('BankAccount', () => {
   });
 
   test('fetchBalance should return number in case if request did not failed', async () => {
+    (random as jest.Mock).mockReturnValueOnce(1000);
+    (random as jest.Mock).mockReturnValueOnce(1);
     const balance = await account.fetchBalance();
-    if (balance) {
-      expect(typeof balance).toBe('number');
-    }
+    expect(balance).toBe(1000);
   });
 
   test('should set new balance if fetchBalance returned number', async () => {
@@ -66,6 +76,9 @@ describe('BankAccount', () => {
     jest.spyOn(account, 'fetchBalance').mockResolvedValue(null);
     await expect(account.synchronizeBalance()).rejects.toThrow(
       SynchronizationFailedError,
+    );
+    await expect(account.synchronizeBalance()).rejects.toThrow(
+      'Synchronization failed',
     );
   });
 });

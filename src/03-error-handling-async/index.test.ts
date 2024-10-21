@@ -15,7 +15,7 @@ describe('resolveValue', () => {
 });
 
 describe('throwError', () => {
-  test('should throw error with provided message',  () => {
+  test('should throw error with provided message', () => {
     const providedMessage = 'This is an error message';
     expect(() => throwError(providedMessage)).toThrow(providedMessage);
   });
@@ -37,6 +37,8 @@ describe('throwCustomError', () => {
 describe('rejectCustomError', () => {
   test('should reject custom error', async () => {
     await expect(rejectCustomError()).rejects.toThrow(MyAwesomeError);
-    await expect(rejectCustomError()).rejects.toThrow('This is my awesome custom error!');
+    await expect(rejectCustomError()).rejects.toThrow(
+      'This is my awesome custom error!',
+    );
   });
 });
